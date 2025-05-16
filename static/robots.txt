@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /private/
+Sitemap: https://votresite.com/sitemap.xml
+
+# Crawl-delay: 10 (optionnel pour limiter le taux de crawl)

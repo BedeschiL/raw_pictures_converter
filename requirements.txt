@@ -1,0 +1,6 @@
+Flask==2.0.1
+Pillow==8.3.1
+rawpy==0.16.0
+imageio==2.9.0
+python-docx==0.8.11
+pdf2docx==0.5.6

@@ -3,7 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RAW to PNG Converter Pro</title>
+    <title>RAW Converter Pro - Conversion d'images et documents professionnels</title>
+    <meta name="description" content="Convertissez vos fichiers RAW, DOCX et PDF en formats standards. Outil professionnel de conversion d'images et documents en ligne.">
+    <meta name="keywords" content="convertisseur RAW, RAW to PNG, DOCX to PDF, PDF to DOCX, conversion images, conversion documents">
+    <meta name="author" content="RAW Converter Pro">
+    <meta property="og:title" content="RAW Converter Pro">
+    <meta property="og:description" content="Outil professionnel de conversion d'images et documents">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://votresite.com">
+    <meta property="og:image" content="https://votresite.com/static/images/og-image.jpg">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://votresite.com">
+    <script type="application/ld+json" src="/static/structured-data.json"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
@@ -11,13 +22,33 @@
 </head>
 <body>
     <div class="container">
+        <!-- Navigation -->
+        <nav class="navbar">
+            <div class="nav-menu">
+                <a href="#" class="nav-link">Accueil</a>
+                <a href="#" class="nav-link">Conversions</a>
+                <a href="#" class="nav-link">A propos</a>
+                <a href="#" class="nav-link">Contact</a>
+            </div>
+        </nav>
+
+        <!-- Converter Selection -->
+        <div class="converter-selector">
+            <div class="converter-select-wrapper">
+                <select id="converter-select" class="converter-select">
+                    <option value="raw_to_png">RAW vers PNG</option>
+                    <option value="docx_pdf">DOCX ↔ PDF</option>
+                </select>
+            </div>
+        </div>
+
         <div class="card">
             <!-- Header -->
             <div class="header">
                 <div class="header-content">
                     <div>
-                        <h1 class="header-title">RAW to PNG Converter Pro</h1>
-                        <p class="header-subtitle">Conversion professionnelle de vos images</p>
+                        <h1 class="header-title" id="converter-title">RAW to PNG Converter Pro</h1>
+                        <p class="header-subtitle" id="converter-subtitle">Conversion professionnelle de vos images</p>
                     </div>
                     <i data-feather="image" class="upload-icon"></i>
                 </div>
@@ -29,13 +60,13 @@
                 <div id="upload-container" class="upload-container">
                     <div class="flex flex-col items-center justify-center space-y-4">
                         <i data-feather="upload" class="upload-icon"></i>
-                        <h2 class="upload-title">Déposez vos fichiers RAW ici</h2>
+                        <h2 class="upload-title" id="upload-title">Déposez vos fichiers ici</h2>
                         <p class="text-gray-500">ou</p>
                         <label for="file-upload" class="upload-button">
                             Parcourir les fichiers
                         </label>
-                        <input id="file-upload" type="file" class="hidden" multiple accept=".nef,.cr2,.arw,.dng,.raw,.orf" />
-                        <p class="text-sm text-gray-500 mt-2">Formats supportés: .NEF (Nikon), .CR2 (Canon), .ARW (Sony), .DNG, .RAW, .ORF (Olympus)</p>
+                        <input id="file-upload" type="file" class="hidden" multiple />
+                        <p class="text-sm text-gray-500 mt-2" id="supported-formats">Formats supportés: .NEF (Nikon), .CR2 (Canon), .ARW (Sony), .DNG, .RAW, .ORF (Olympus)</p>
                     </div>
                 </div>
 
@@ -75,6 +106,11 @@
             feather.replace();
 
             // Elements
+            const converterSelect = document.getElementById('converter-select');
+            const converterTitle = document.getElementById('converter-title');
+            const converterSubtitle = document.getElementById('converter-subtitle');
+            const uploadTitle = document.getElementById('upload-title');
+            const supportedFormats = document.getElementById('supported-formats');
             const fileUpload = document.getElementById('file-upload');
             const uploadContainer = document.getElementById('upload-container');
             const progressSection = document.getElementById('progress-section');
@@ -85,6 +121,39 @@
             const summaryElement = document.getElementById('summary');
             const batchActions = document.getElementById('batch-actions');
             const downloadAllBtn = document.getElementById('download-all');
+
+            // Gestion du changement de convertisseur
+            converterSelect.addEventListener('change', function() {
+                const converterId = this.value;
+                fetch(`/get_converter_info/${converterId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.error) {
+                            console.error(data.error);
+                            return;
+                        }
+
+                        // Mise à jour de l'interface
+                        converterTitle.textContent = data.title;
+                        converterSubtitle.textContent = data.subtitle;
+                        uploadTitle.textContent = `Déposez vos fichiers ${converterId === 'raw_to_png' ? 'RAW' : converterId === 'docx_pdf' ? 'DOCX/PDF' : ''} ici`;
+                        supportedFormats.textContent = `Formats supportés: ${data.formats}`;
+                        
+                        // Mise à jour de l'icône
+                        const icon = document.querySelector('.header-content .upload-icon');
+                        icon.setAttribute('data-feather', converterId === 'raw_to_png' ? 'image' : 'file');
+                        feather.replace();
+
+                        // Mise à jour des formats acceptés
+                        const formats = converterId === 'raw_to_png' ? 
+                            '.nef,.cr2,.arw,.dng,.raw,.orf' : 
+                            '.docx,.pdf';
+                        fileUpload.setAttribute('accept', formats);
+                    });
+            });
+
+            // Initialisation
+            converterSelect.dispatchEvent(new Event('change'));
 
             // Drag and drop handlers
             ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
@@ -301,5 +370,20 @@ function showResults(results) {
             }
         });
     </script>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <p>© 2025 RAW Converter Pro</p>
+            <div class="social-links">
+                <a href="https://linkedin.com/in/votreprofil" target="_blank">
+                    <i data-feather="linkedin"></i>
+                </a>
+                <a href="https://github.com/votreprofil" target="_blank">
+                    <i data-feather="github"></i>
+                </a>
+            </div>
+        </div>
+    </footer>
 </body>
 </html>

@@ -1,3 +1,7 @@
+```
+sudo apt-get install libreoffice --no-install-recommends
+```
+
 # RAW to PNG Converter Pro
 
 Application web pour convertir des images RAW (NEF, CR2, ARW, DNG, ORF) en PNG.

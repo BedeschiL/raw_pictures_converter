@@ -6,17 +6,34 @@ import os
 import uuid
 from flask import send_file
 from converters.raw_to_png import RawToPngConverter
+from converters.docx_to_pdf import DocxToPdfConverter
+from converters.pdf_to_docx import PdfToDocxConverter
 
 app = Flask(__name__)
 
 # Configuration
+CONVERTER_TITLES = {
+    'raw_to_png': 'RAW to PNG Converter Pro',
+    'docx_to_pdf': 'DOCX to PDF Converter',
+    'pdf_to_docx': 'PDF to DOCX Converter'
+}
+
+CONVERTER_SUBTITLES = {
+    'raw_to_png': 'Conversion professionnelle de vos images',
+    'docx_to_pdf': 'Conversion de documents Word en PDF',
+    'pdf_to_docx': 'Conversion de PDF en documents Word'
+}
+
+# Enregistrement des convertisseurs
 app.config['UPLOAD_FOLDER'] = 'static/uploads/'
 app.config['CONVERTED_FOLDER'] = 'static/converted/'
 app.config['MAX_CONTENT_LENGTH'] = 1000 * 1024 * 1024  # 50MB max
 
 # Enregistrement des convertisseurs
 CONVERTERS = {
-    'raw_to_png': RawToPngConverter
+    'raw_to_png': RawToPngConverter,
+    'docx_to_pdf': DocxToPdfConverter,
+    'pdf_to_docx': PdfToDocxConverter
 }
 
 # Créer les dossiers s'ils n'existent pas
@@ -45,6 +62,20 @@ def get_converter(filename):
 @app.route('/')
 def index():
     return render_template('index.html')
+
+@app.route('/get_converter_info/<converter_id>')
+def get_converter_info(converter_id):
+    if converter_id not in CONVERTERS:
+        return {'error': 'Converter not found'}, 404
+        
+    converter = CONVERTERS[converter_id]
+    formats = ', '.join(f'.{ext}' for ext in converter.supported_formats())
+    
+    return {
+        'title': CONVERTER_TITLES.get(converter_id, ''),
+        'subtitle': CONVERTER_SUBTITLES.get(converter_id, ''),
+        'formats': formats
+    }
 
 
 @app.route('/upload', methods=['POST'])
