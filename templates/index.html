@@ -37,7 +37,8 @@
             <div class="converter-select-wrapper">
                 <select id="converter-select" class="converter-select">
                     <option value="raw_to_png">RAW vers PNG</option>
-                    <option value="docx_pdf">DOCX ↔ PDF</option>
+                    <option value="docx_to_pdf">DOCX vers PDF</option>
+                    <option value="pdf_to_docx">PDF vers DOCX</option>
                 </select>
             </div>
         </div>
@@ -114,7 +115,7 @@
             const fileUpload = document.getElementById('file-upload');
             const uploadContainer = document.getElementById('upload-container');
             const progressSection = document.getElementById('progress-section');
-            const progressBar = document.getElementById('progress-bar');
+            const progressBar = document.getElementById('progress-fill');
             const progressText = document.getElementById('progress-text');
             const resultsContainer = document.getElementById('results-container');
             const resultsList = document.getElementById('results-list');
@@ -136,7 +137,7 @@
                         // Mise à jour de l'interface
                         converterTitle.textContent = data.title;
                         converterSubtitle.textContent = data.subtitle;
-                        uploadTitle.textContent = `Déposez vos fichiers ${converterId === 'raw_to_png' ? 'RAW' : converterId === 'docx_pdf' ? 'DOCX/PDF' : ''} ici`;
+                        uploadTitle.textContent = `Déposez vos fichiers ${converterId === 'raw_to_png' ? 'RAW' : converterId === 'pdf_to_docx' ? 'PDF' : 'DOCX'} ici`;
                         supportedFormats.textContent = `Formats supportés: ${data.formats}`;
                         
                         // Mise à jour de l'icône
@@ -195,6 +196,7 @@
             // Process files
             async function handleFiles(e) {
                 const files = e.target.files;
+                console.log('Files selected:', files);
                 if (files.length === 0) return;
 
                 // Reset UI
@@ -204,6 +206,25 @@
                 progressSection.classList.remove('hidden');
                 resultsContainer.classList.add('hidden');
                 batchActions.classList.add('hidden');
+
+                // Show convert button
+                const convertBtn = document.createElement('button');
+                convertBtn.id = 'convert-btn';
+                convertBtn.className = 'convert-button';
+                convertBtn.innerHTML = '<i data-feather="refresh-cw"></i> Convertir';
+                uploadContainer.appendChild(convertBtn);
+                feather.replace();
+
+                // Handle convert button click
+                convertBtn.onclick = async function() {
+                    console.log('Conversion started for files:', files);
+                    await processConversion(files);
+                    convertBtn.remove();
+                };
+            }
+
+            async function processConversion(files) {
+                console.log('Processing conversion for', files.length, 'files');
 
                 // Create FormData
                 const formData = new FormData();
@@ -347,24 +368,25 @@ function showResults(results) {
     feather.replace();
 }
 
-            function showError() {
-    progressSection.classList.add('hidden');
-    resultsContainer.classList.remove('hidden');
+            function showError(error) {
+                console.error('Conversion error:', error);
+                progressSection.classList.add('hidden');
+                resultsContainer.classList.remove('hidden');
 
-    const errorDiv = document.createElement('div');
-    errorDiv.className = 'error-message';
+                const errorDiv = document.createElement('div');
+                errorDiv.className = 'error-message';
 
-    const errorIcon = document.createElement('i');
-    errorIcon.setAttribute('data-feather', 'alert-triangle');
-    errorIcon.className = 'error-icon';
+                const errorIcon = document.createElement('i');
+                errorIcon.setAttribute('data-feather', 'alert-triangle');
+                errorIcon.className = 'error-icon';
 
-    const errorText = document.createElement('p');
-    errorText.className = 'error-text';
-    errorText.textContent = 'Une erreur est survenue lors de la conversion. Veuillez réessayer.';
+                const errorText = document.createElement('p');
+                errorText.className = 'error-text';
+                errorText.textContent = `Erreur: ${error.message || 'Une erreur est survenue lors de la conversion'}`;
 
-    errorDiv.appendChild(errorIcon);
-    errorDiv.appendChild(errorText);
-    resultsList.appendChild(errorDiv);
+                errorDiv.appendChild(errorIcon);
+                errorDiv.appendChild(errorText);
+                resultsList.appendChild(errorDiv);
 
                 feather.replace();
             }

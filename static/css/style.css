@@ -221,6 +221,66 @@ body {
   overflow: hidden;
 }
 
+.convert-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--primary);
+  color: white;
+  padding: 1rem 2rem;
+  border-radius: 0.75rem;
+  font-weight: 600;
+  font-size: 1.1rem;
+  width: 100%;
+  max-width: 300px;
+  margin: 2rem auto;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  position: relative;
+  overflow: hidden;
+}
+
+.convert-button:hover {
+  background-color: var(--primary-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.convert-button:active {
+  transform: translateY(0);
+}
+
+.convert-button:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.3);
+}
+
+.convert-button::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 5px;
+  height: 5px;
+  background: rgba(255, 255, 255, 0.5);
+  opacity: 0;
+  border-radius: 100%;
+  transform: scale(1, 1) translate(-50%, -50%);
+  transform-origin: 50% 50%;
+}
+
+.convert-button:focus:not(:active)::after {
+  animation: ripple 1s ease-out;
+}
+
+.convert-button i {
+  margin-right: 0.75rem;
+  width: 20px;
+  height: 20px;
+}
+
 .download-all-button:hover {
   background-color: var(--primary-hover);
   transform: translateY(-2px);

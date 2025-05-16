@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A propos - RAW Converter Pro</title>
+    <meta name="description" content="Découvrez l'équipe et la mission de RAW Converter Pro, votre solution professionnelle de conversion de fichiers.">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Navigation -->
+        <nav class="navbar">
+            <div class="nav-menu">
+                <a href="/" class="nav-link">Accueil</a>
+                <a href="#" class="nav-link">Conversions</a>
+                <a href="/about" class="nav-link active">A propos</a>
+                <a href="/contact" class="nav-link">Contact</a>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <div class="card">
+            <div class="header">
+                <div class="header-content">
+                    <div>
+                        <h1 class="header-title">A propos de nous</h1>
+                        <p class="header-subtitle">Notre mission et notre équipe</p>
+                    </div>
+                    <i data-feather="info" class="upload-icon"></i>
+                </div>
+            </div>
+
+            <div class="content">
+                <section class="about-section">
+                    <h2>Notre mission</h2>
+                    <p>RAW Converter Pro a été créé pour offrir une solution simple et efficace de conversion de fichiers professionnels. Nous nous engageons à fournir un service rapide, sécurisé et de haute qualité.</p>
+                </section>
+
+                <section class="about-section">
+                    <h2>Notre équipe</h2>
+                    <div class="team-grid">
+                        <div class="team-member">
+                            <i data-feather="user"></i>
+                            <h3>Jean Dupont</h3>
+                            <p>Fondateur & Développeur</p>
+                        </div>
+                        <div class="team-member">
+                            <i data-feather="user"></i>
+                            <h3>Marie Martin</h3>
+                            <p>Designer UX/UI</p>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="about-section">
+                    <h2>Technologies</h2>
+                    <div class="tech-stack">
+                        <div class="tech-item">
+                            <i data-feather="code"></i>
+                            <span>Python</span>
+                        </div>
+                        <div class="tech-item">
+                            <i data-feather="code"></i>
+                            <span>Flask</span>
+                        </div>
+                        <div class="tech-item">
+                            <i data-feather="code"></i>
+                            <span>JavaScript</span>
+                        </div>
+                        <div class="tech-item">
+                            <i data-feather="code"></i>
+                            <span>Tailwind CSS</span>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <p>© 2025 RAW Converter Pro</p>
+            <div class="social-links">
+                <a href="https://linkedin.com/in/votreprofil" target="_blank">
+                    <i data-feather="linkedin"></i>
+                </a>
+                <a href="https://github.com/votreprofil" target="_blank">
+                    <i data-feather="github"></i>
+                </a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            feather.replace();
+        });
+    </script>
+</body>
+</html>
