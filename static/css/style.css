@@ -1,0 +1,270 @@
+:root {
+  --primary: #2563eb;
+  --primary-hover: #1d4ed8;
+  --secondary: #7c3aed;
+  --success: #10b981;
+  --error: #ef4444;
+  --background: #f8fafc;
+  --card: #ffffff;
+  --text: #1e293b;
+  --text-light: #64748b;
+  --border: #e2e8f0;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: var(--background);
+  color: var(--text);
+  line-height: 1.5;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+/* Header */
+.header {
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  color: white;
+  padding: 2rem;
+  border-radius: 0.5rem 0.5rem 0 0;
+}
+
+.header-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.header-title {
+  font-size: 1.75rem;
+  font-weight: 700;
+}
+
+.header-subtitle {
+  color: rgba(255, 255, 255, 0.9);
+  margin-top: 0.5rem;
+}
+
+/* Upload Zone */
+.upload-container {
+  border: 2px dashed var(--border);
+  border-radius: 0.75rem;
+  padding: 3rem;
+  text-align: center;
+  margin-bottom: 2rem;
+  transition: all 0.2s ease;
+}
+
+.upload-container.drag-over {
+  border-color: var(--primary);
+  background-color: rgba(37, 99, 235, 0.05);
+}
+
+.upload-icon {
+  color: var(--primary);
+  width: 4rem;
+  height: 4rem;
+  margin-bottom: 1rem;
+}
+
+.upload-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.upload-button {
+  background-color: var(--primary);
+  color: white;
+  font-weight: 500;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.5rem;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.upload-button:hover {
+  background-color: var(--primary-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Progress */
+.progress-container {
+  margin-bottom: 2rem;
+}
+
+.progress-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+}
+
+.progress-bar {
+  height: 0.5rem;
+  background-color: var(--border);
+  border-radius: 0.25rem;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--primary), var(--secondary));
+  transition: width 0.3s ease;
+}
+
+/* Results */
+.results-container {
+  background-color: var(--card);
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  padding: 1.5rem;
+}
+
+.results-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.results-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.results-list {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.result-item {
+  display: flex;
+  align-items: center;
+  padding: 1rem;
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  transition: all 0.2s ease;
+}
+
+.result-item:hover {
+  background-color: rgba(248, 250, 252, 0.5);
+}
+
+.result-checkbox {
+  margin-right: 1rem;
+  accent-color: var(--primary);
+}
+
+.result-icon {
+  margin-right: 1rem;
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+.result-icon.success {
+  color: var(--success);
+}
+
+.result-icon.error {
+  color: var(--error);
+}
+
+.result-name {
+  flex-grow: 1;
+}
+
+.result-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.download-button {
+  background-color: var(--primary);
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 0.25rem;
+  font-size: 0.875rem;
+  transition: all 0.2s ease;
+}
+
+.download-button:hover {
+  background-color: var(--primary-hover);
+}
+
+/* Batch Actions */
+.batch-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.download-all-button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: var(--primary);
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.download-all-button:hover {
+  background-color: var(--primary-hover);
+}
+
+.download-all-button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.spinner {
+  animation: spin 1s linear infinite;
+}
+
+/* Error Messages */
+.error-message {
+  padding: 1rem;
+  background-color: rgba(239, 68, 68, 0.1);
+  border: 1px solid var(--error);
+  border-radius: 0.5rem;
+  text-align: center;
+}
+
+.error-icon {
+  width: 1.5rem;
+  height: 1.5rem;
+  color: var(--error);
+  margin: 0 auto 0.5rem;
+}
+
+.error-text {
+  color: var(--error);
+  font-weight: 500;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .container {
+    padding: 1rem;
+  }
+  
+  .header {
+    padding: 1.5rem;
+  }
+  
+  .upload-container {
+    padding: 2rem;
+  }
+}

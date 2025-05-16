@@ -1,49 +1,46 @@
 import zipfile
 from io import BytesIO
-
 from flask import Flask, render_template, request, redirect, url_for, send_from_directory
 from werkzeug.utils import secure_filename
-from PIL import Image
 import os
 import uuid
 from flask import send_file
+from converters.raw_to_png import RawToPngConverter
 
 app = Flask(__name__)
 
 # Configuration
 app.config['UPLOAD_FOLDER'] = 'static/uploads/'
 app.config['CONVERTED_FOLDER'] = 'static/converted/'
-app.config['ALLOWED_EXTENSIONS'] = {'nef', 'cr2', 'arw', 'dng', 'raw', 'orf'}
 app.config['MAX_CONTENT_LENGTH'] = 1000 * 1024 * 1024  # 50MB max
+
+# Enregistrement des convertisseurs
+CONVERTERS = {
+    'raw_to_png': RawToPngConverter
+}
 
 # Créer les dossiers s'ils n'existent pas
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 os.makedirs(app.config['CONVERTED_FOLDER'], exist_ok=True)
 
-
 def allowed_file(filename):
-    return '.' in filename and \
-        filename.rsplit('.', 1)[1].lower() in app.config['ALLOWED_EXTENSIONS']
-
-
-def convert_to_png(input_path, output_path):
-    try:
-        # Vérifier l'extension pour les fichiers ORF
-        if input_path.lower().endswith('.orf'):
-            import rawpy
-            import imageio
-
-            with rawpy.imread(input_path) as raw:
-                rgb = raw.postprocess()
-                imageio.imsave(output_path, rgb)
-        else:
-            # Traitement normal pour les autres formats
-            with Image.open(input_path) as img:
-                img.save(output_path, 'PNG')
-        return True
-    except Exception as e:
-        print(f"Erreur de conversion: {e}")
+    """Vérifie si le fichier est supporté par un des convertisseurs"""
+    if '.' not in filename:
         return False
+        
+    ext = filename.rsplit('.', 1)[1].lower()
+    for converter in CONVERTERS.values():
+        if ext in converter.supported_formats():
+            return True
+    return False
+
+def get_converter(filename):
+    """Retourne le convertisseur approprié pour le fichier"""
+    ext = filename.rsplit('.', 1)[1].lower()
+    for converter in CONVERTERS.values():
+        if ext in converter.supported_formats():
+            return converter
+    return None
 
 @app.route('/')
 def index():
@@ -63,15 +60,27 @@ def upload_files():
             filename = secure_filename(file.filename)
             unique_id = str(uuid.uuid4())
             raw_path = os.path.join(app.config['UPLOAD_FOLDER'], f"{unique_id}_{filename}")
-            png_filename = f"{os.path.splitext(filename)[0]}.png"
-            png_path = os.path.join(app.config['CONVERTED_FOLDER'], f"{unique_id}_{png_filename}")
+            
+            # Trouver le bon convertisseur
+            converter = get_converter(filename)
+            if not converter:
+                results.append({
+                    'original': filename,
+                    'converted': None,
+                    'success': False
+                })
+                continue
+                
+            # Générer le nom de fichier de sortie
+            output_filename = converter.get_output_filename(filename)
+            output_path = os.path.join(app.config['CONVERTED_FOLDER'], f"{unique_id}_{output_filename}")
 
             file.save(raw_path)
-            success = convert_to_png(raw_path, png_path)
+            success = converter.convert(raw_path, output_path)
 
             results.append({
                 'original': filename,
-                'converted': f"{unique_id}_{png_filename}" if success else None,
+                'converted': f"{unique_id}_{output_filename}" if success else None,
                 'success': success
             })
 

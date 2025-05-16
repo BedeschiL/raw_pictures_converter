@@ -7,58 +7,31 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
-    <style>
-        .file-upload:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-        }
-        .file-upload.drag-over {
-            border-color: #3B82F6;
-            background-color: #EFF6FF;
-        }
-            .file-checkbox {
-        accent-color: #3B82F6;
-        width: 18px;
-        height: 18px;
-    }
-
-    #download-all:disabled {
-        opacity: 0.7;
-        cursor: not-allowed;
-    }
-
-    @keyframes spin {
-        to { transform: rotate(360deg); }
-    }
-
-    .animate-spin {
-        animation: spin 1s linear infinite;
-    }
-    </style>
+    <link rel="stylesheet" href="/static/css/style.css">
 </head>
-<body class="font-inter bg-gray-50 min-h-screen">
-    <div class="container mx-auto px-4 py-12">
-        <div class="max-w-4xl mx-auto bg-white rounded-xl shadow-lg overflow-hidden">
+<body>
+    <div class="container">
+        <div class="card">
             <!-- Header -->
-            <div class="bg-gradient-to-r from-blue-600 to-indigo-700 p-8 text-white">
-                <div class="flex items-center justify-between">
+            <div class="header">
+                <div class="header-content">
                     <div>
-                        <h1 class="text-3xl font-bold">RAW to PNG Converter</h1>
-                        <p class="text-blue-100 mt-2">Conversion professionnelle de vos images RAW en format PNG</p>
+                        <h1 class="header-title">RAW to PNG Converter Pro</h1>
+                        <p class="header-subtitle">Conversion professionnelle de vos images</p>
                     </div>
-                    <i data-feather="image" class="w-12 h-12"></i>
+                    <i data-feather="image" class="upload-icon"></i>
                 </div>
             </div>
 
             <!-- Main Content -->
-            <div class="p-8">
+            <div class="content">
                 <!-- Upload Zone -->
-                <div id="upload-container" class="file-upload border-2 border-dashed border-gray-300 rounded-xl p-12 text-center mb-8 transition-all duration-200">
+                <div id="upload-container" class="upload-container">
                     <div class="flex flex-col items-center justify-center space-y-4">
-                        <i data-feather="upload" class="w-16 h-16 text-blue-500"></i>
-                        <h2 class="text-xl font-semibold text-gray-700">Déposez vos fichiers RAW ici</h2>
+                        <i data-feather="upload" class="upload-icon"></i>
+                        <h2 class="upload-title">Déposez vos fichiers RAW ici</h2>
                         <p class="text-gray-500">ou</p>
-                        <label for="file-upload" class="cursor-pointer bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-8 rounded-lg transition-colors shadow-md">
+                        <label for="file-upload" class="upload-button">
                             Parcourir les fichiers
                         </label>
                         <input id="file-upload" type="file" class="hidden" multiple accept=".nef,.cr2,.arw,.dng,.raw,.orf" />
@@ -67,27 +40,27 @@
                 </div>
 
                 <!-- Progress Section -->
-                <div id="progress-section" class="hidden mb-8">
-                    <div class="flex items-center justify-between mb-3">
-                        <h3 class="font-medium text-gray-700">Progression de la conversion</h3>
-                        <span id="progress-text" class="text-sm font-medium text-gray-600">0%</span>
+                <div id="progress-section" class="progress-container hidden">
+                    <div class="progress-header">
+                        <h3 class="font-medium">Progression de la conversion</h3>
+                        <span id="progress-text" class="text-sm font-medium">0%</span>
                     </div>
-                    <div class="w-full bg-gray-200 rounded-full h-2.5">
-                        <div id="progress-bar" class="bg-gradient-to-r from-blue-500 to-indigo-600 h-2.5 rounded-full transition-all duration-300" style="width: 0%"></div>
+                    <div class="progress-bar">
+                        <div id="progress-fill" class="progress-fill" style="width: 0%"></div>
                     </div>
                 </div>
 
                 <!-- Results Section -->
-                <div id="results-container" class="hidden">
-                    <div class="flex items-center justify-between mb-4">
-                        <h3 class="text-lg font-semibold text-gray-800">Résultats</h3>
-                        <div id="summary" class="text-sm text-gray-600"></div>
+                <div id="results-container" class="results-container hidden">
+                    <div class="results-header">
+                        <h3 class="results-title">Résultats</h3>
+                        <div id="summary" class="text-sm"></div>
                     </div>
 
-                    <div id="results-list" class="space-y-3"></div>
+                    <div id="results-list" class="results-list"></div>
 
-                    <div id="batch-actions" class="hidden mt-6 flex justify-end space-x-3">
-                        <button id="download-all" class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-6 rounded-lg transition-colors flex items-center space-x-2">
+                    <div id="batch-actions" class="batch-actions hidden">
+                        <button id="download-all" class="download-all-button">
                             <i data-feather="download"></i>
                             <span>Tout télécharger</span>
                         </button>
@@ -200,7 +173,7 @@
             }
 
             function updateProgress(percent) {
-                progressBar.style.width = `${percent}%`;
+                document.getElementById('progress-fill').style.width = `${percent}%`;
                 progressText.textContent = `${percent}%`;
             }
 
@@ -216,17 +189,25 @@ function showResults(results) {
 
     results.forEach(result => {
         const item = document.createElement('div');
-        item.className = 'flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50';
+        item.className = 'result-item';
+
+        if (result.success) {
+            const checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            checkbox.className = 'result-checkbox';
+            checkbox.checked = true;
+            checkbox.dataset.filename = result.converted;
+            item.appendChild(checkbox);
+        }
 
         const fileInfo = document.createElement('div');
-        fileInfo.className = 'flex items-center space-x-4';
+        fileInfo.className = 'result-name';
 
         const icon = document.createElement('i');
         icon.setAttribute('data-feather', result.success ? 'check-circle' : 'x-circle');
-        icon.className = `w-5 h-5 ${result.success ? 'text-green-500' : 'text-red-500'}`;
+        icon.className = `result-icon ${result.success ? 'success' : 'error'}`;
 
         const fileName = document.createElement('span');
-        fileName.className = 'text-gray-800';
         fileName.textContent = result.original;
 
         fileInfo.appendChild(icon);
@@ -236,16 +217,9 @@ function showResults(results) {
         if (result.success) {
             successCount++;
             convertedFiles.push(result.converted);
-
-            const checkbox = document.createElement('input');
-            checkbox.type = 'checkbox';
-            checkbox.className = 'file-checkbox mr-3';
-            checkbox.checked = true;
-            checkbox.dataset.filename = result.converted;
-            item.insertBefore(checkbox, fileInfo);
         } else {
             const errorText = document.createElement('span');
-            errorText.className = 'text-red-500 text-sm';
+            errorText.className = 'error-text';
             errorText.textContent = 'Échec de conversion';
             item.appendChild(errorText);
         }
@@ -305,23 +279,23 @@ function showResults(results) {
 }
 
             function showError() {
-                progressSection.classList.add('hidden');
-                resultsContainer.classList.remove('hidden');
+    progressSection.classList.add('hidden');
+    resultsContainer.classList.remove('hidden');
 
-                const errorDiv = document.createElement('div');
-                errorDiv.className = 'p-4 bg-red-50 border border-red-200 rounded-lg text-center';
+    const errorDiv = document.createElement('div');
+    errorDiv.className = 'error-message';
 
-                const errorIcon = document.createElement('i');
-                errorIcon.setAttribute('data-feather', 'alert-triangle');
-                errorIcon.className = 'w-6 h-6 text-red-500 mx-auto mb-2';
+    const errorIcon = document.createElement('i');
+    errorIcon.setAttribute('data-feather', 'alert-triangle');
+    errorIcon.className = 'error-icon';
 
-                const errorText = document.createElement('p');
-                errorText.className = 'text-red-600 font-medium';
-                errorText.textContent = 'Une erreur est survenue lors de la conversion. Veuillez réessayer.';
+    const errorText = document.createElement('p');
+    errorText.className = 'error-text';
+    errorText.textContent = 'Une erreur est survenue lors de la conversion. Veuillez réessayer.';
 
-                errorDiv.appendChild(errorIcon);
-                errorDiv.appendChild(errorText);
-                resultsList.appendChild(errorDiv);
+    errorDiv.appendChild(errorIcon);
+    errorDiv.appendChild(errorText);
+    resultsList.appendChild(errorDiv);
 
                 feather.replace();
             }
